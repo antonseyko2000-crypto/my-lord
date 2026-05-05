@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кофейня Замка Дракона</title>
+
+<style>
+
+/* ===== ФОН ЗАМКА ===== */
+body {
+  margin: 0;
+  font-family: Arial;
+  color: #e6d3a3;
+  cursor: none;
+  overflow-x: hidden;
+
+  background:
+    linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.95)),
+    url("castle.jpg");
+
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+/* ===== КУРСОР ===== */
+.cursor {
+  position: fixed;
+  width: 16px;
+  height: 16px;
+  background: radial-gradient(circle, #ffd27a, #ff6a00);
+  border-radius: 50%;
+  box-shadow: 0 0 15px #ffb300;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+}
+
+/* ===== МОЛНИИ ===== */
+.lightning {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.flash {
+  width: 100%;
+  height: 100%;
+  background: white;
+  opacity: 0;
+  animation: flash 7s infinite;
+}
+
+@keyframes flash {
+  0%, 90%, 100% { opacity: 0; }
+  92% { opacity: 0.8; }
+  94% { opacity: 0; }
+}
+
+/* ===== ОГОНЬ ===== */
+.fire {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle, #ffdd00, #ff4d00, transparent 70%);
+  border-radius: 50%;
+  filter: blur(16px);
+  animation: fireMove 0.7s infinite alternate;
+}
+
+@keyframes fireMove {
+  0% { transform: scale(1) rotate(-2deg); }
+  100% { transform: scale(1.25) rotate(2deg); }
+}
+
+/* ===== ДЫМ ===== */
+.smoke {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 350px;
+  height: 350px;
+  background: rgba(200,200,200,0.12);
+  border-radius: 50%;
+  filter: blur(45px);
+  animation: rise 7s infinite ease-in-out;
+}
+
+@keyframes rise {
+  0% { transform: translate(-50%, 0) scale(0.8); opacity: 0; }
+  50% { opacity: 0.4; }
+  100% { transform: translate(-50%, -300px) scale(1.6); opacity: 0; }
+}
+
+/* ===== ЧАСТИЦЫ ===== */
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #ffd27a;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #ffb300;
+  animation: floatUp 6s linear infinite;
+  opacity: 0;
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translateY(-100px) scale(1.2); opacity: 0; }
+}
+
+/* ===== ДРАКОН ===== */
+.dragon {
+  position: absolute;
+  top: 10%;
+  left: -200px;
+  width: 220px;
+  height: 220px;
+  background: url("dragon.png") no-repeat center/contain;
+  animation: fly 25s linear infinite;
+  opacity: 0.8;
+  transition: transform 0.2s ease;
+}
+
+@keyframes fly {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(120vw); }
+}
+
+/* ===== UI ===== */
+header {
+  text-align: center;
+  padding: 30px;
+  background: rgba(0,0,0,0.5);
+  border-bottom: 2px solid #b08d57;
+}
+
+header h1 {
+  font-size: 40px;
+  text-shadow: 0 0 10px #b08d57;
+}
+
+.menu, .contact {
+  padding: 20px;
+}
+
+.item {
+  background: rgba(20, 20, 20, 0.85);
+  border: 1px solid #b08d57;
+  margin: 10px 0;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+img {
+  max-width: 200px;
+  display: block;
+  margin: 15px auto;
+  border-radius: 10px;
+  border: 2px solid #b08d57;
+  box-shadow: 0 0 15px rgba(176, 141, 87, 0.4);
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  background: #111;
+  color: #e6d3a3;
+  border: 1px solid #b08d57;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(90deg, #b08d57, #3a2a16);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* ===== КНОПКА ЗВУКА ===== */
+.sound-btn {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #1a1a1a;
+  border: 1px solid #b08d57;
+  z-index: 9999;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sound-btn::after {
+  content: "🔥";
+  font-size: 18px;
+  animation: blink 0.8s infinite alternate;
+}
+
+@keyframes blink {
+  from { opacity: 0.4; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1.2); }
+}
+
+.sound-btn.active {
+  box-shadow: 0 0 15px #ff6a00;
+}
+
+audio { display: none; }
+
+</style>
+</head>
+
+<body>
+
+<div class="cursor"></div>
+
+<div class="lightning"><div class="flash"></div></div>
+
+<div class="fire"></div>
+<div class="smoke"></div>
+<div class="dragon"></div>
+
+<header>
+  <h1>Dark Dungeon </h1>
+  <p>Лучшие тёмные фантазии ☕🔥</p>
+</header>
+
+<div class="menu">
+  <h2>Меню</h2>
+
+  <img src="coffee.jpg.jpg">
+
+  <div class="item">Дарк Anal — 50 грн</div>
+  <div class="item">Fisting  — 300 $</div>
+  <div class="item">Лютий защеканец — гематоген аптечний</div>
+</div>
+
+<div class="contact">
+  <h2>Связь с тёмным лордом</h2>
+
+  <input type="text" placeholder="Ваше имя">
+  <input type="text" placeholder="Телефон">
+  <button onclick="sendForm()">Отправить</button>
+</div>
+
+<!-- кнопка звука -->
+<div class="sound-btn" id="soundBtn"></div>
+
+<!-- звук -->
+<audio id="fireSound">
+  <source src="fire.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+
+/* курсор */
+const cursor = document.querySelector(".cursor");
+document.addEventListener("mousemove", (e) => {
+  cursor.style.left = e.clientX + "px";
+  cursor.style.top = e.clientY + "px";
+});
+
+/* частицы */
+function createParticle() {
+  const p = document.createElement("div");
+  p.classList.add("particle");
+
+  p.style.left = Math.random() * window.innerWidth + "px";
+  p.style.animationDuration = (3 + Math.random() * 4) + "s";
+
+  document.body.appendChild(p);
+  setTimeout(() => p.remove(), 7000);
+}
+setInterval(createParticle, 200);
+
+/* форма */
+function sendForm() {
+  const name = document.querySelector('input[placeholder="Ваше имя"]').value;
+  const phone = document.querySelector('input[placeholder="Телефон"]').value;
+
+  if (!name || !phone) {
+    alert("Заполните все поля!");
+    return;
+  }
+
+  alert("Спасибо, " + name + "!");
+}
+
+/* дракон */
+document.addEventListener("mousemove", (e) => {
+  const dragon = document.querySelector(".dragon");
+  const x = (e.clientX / window.innerWidth - 0.5) * 30;
+  const y = (e.clientY / window.innerHeight - 0.5) * 10;
+  dragon.style.transform = `translate(${x}px, ${y}px)`;
+});
+
+/* ===== ЗВУК (ИСПРАВЛЕННЫЙ ЦИКЛ) ===== */
+const soundBtn = document.getElementById("soundBtn");
+const fireSound = document.getElementById("fireSound");
+
+fireSound.volume = 0.4;
+fireSound.loop = true; // 🔥 жесткое зацикливание
+
+let isPlaying = false;
+
+soundBtn.addEventListener("click", () => {
+  if (!isPlaying) {
+    fireSound.currentTime = 0;
+    fireSound.play();
+    soundBtn.classList.add("active");
+    isPlaying = true;
+  } else {
+    fireSound.pause();
+    soundBtn.classList.remove("active");
+    isPlaying = false;
+  }
+});
+
+</script>
+
+</body>
+</html>
